@@ -1,0 +1,6 @@
+[Unit]
+Description=NASA daily wallpaper
+
+[Service]
+Type=oneshot
+ExecStart=/a/path/to/wallpaper-switch
