@@ -18,6 +18,8 @@ It stores its status (file `status.toml`) and the current desktop wallpaper in `
 
 - Install dependencies:
 
+`sudo pacman -S go`
+
 `go get -u github.com/naoina/toml`
 
 `go get -u github.com/nu7hatch/gouuid`
