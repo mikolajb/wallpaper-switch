@@ -26,11 +26,12 @@ It stores its status (file `status.toml`) and the current desktop wallpaper in `
 
 `go build wallpaper-switch.go`
 
-- place files `wallpaper-switch.timer` and `wallpaper-switch.service` in `~/.local/share/systemd/user`
+- place files `wallpaper-switch.timer` and `wallpaper-switch.service` in `~/.config/systemd/user/`
 
 - modify variable `ExecStart` in `wallpaper-switch.service` - it should point to a binary of wallpaper-switch.
 
 Then, execute the following commands:
 
 `systemctl --user enable wallpaper-switch.timer`
+
 `systemctl --user start wallpaper-switch.timer`
