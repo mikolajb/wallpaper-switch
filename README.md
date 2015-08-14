@@ -32,6 +32,8 @@ and add it to the `$GOPATH` environment variable.
 
 `go get -u github.com/nu7hatch/gouuid`
 
+`go get -u golang.org/x/net/html`
+
 - compile:
 
 `go build wallpaper-switch.go`
