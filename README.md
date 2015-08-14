@@ -16,9 +16,17 @@ It stores its status (file `status.toml`) and the current desktop wallpaper in `
 
 ## How to install
 
-- Install dependencies:
+- Install Go (if you don't have it):
 
 `sudo pacman -S go`
+
+Create a directory to store go source code fetched from other repositories
+
+`mkdir -p ~/repos/gosource`
+
+and add it to the `$GOPATH` environment variable.
+
+- Install dependencies:
 
 `go get -u github.com/naoina/toml`
 
