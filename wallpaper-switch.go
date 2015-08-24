@@ -112,7 +112,7 @@ func main() {
 		Items []Item `xml:"channel>item"`
 	}
 
-	var rss_str = PopularRSS
+	var rss_str = EditorsRSS
 	rss_resp, err := http.Get(rss_str)
 
 	if err != nil {
@@ -138,6 +138,17 @@ func main() {
 
 	if err != nil {
 		panic(err)
+	}
+
+	for url.String() == state.SourceURL{
+		state.Count += 1
+		var next_item = state.Count % len(rss.Items)
+		url, err := url.Parse(rss.Items[next_item].Link)
+
+		if err != nil {
+			panic(err)
+		}
+		_ = url
 	}
 
 	doc, err := goquery.NewDocument(url.String())
