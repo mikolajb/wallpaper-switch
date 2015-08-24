@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=0.1
+Name=Wallpaper Switch
+Comment=Switch wallpaper to new 500px editors choice
+Type=Application
+Vendor=Mikolaj Baranowski Inc.
+Exec=path to wallpaper-switch binary
+Icon=path to 500px icon
