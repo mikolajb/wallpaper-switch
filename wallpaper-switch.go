@@ -12,9 +12,9 @@ import (
 	"path"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/naoina/toml"
 	uuid "github.com/nu7hatch/gouuid"
-	"golang.org/x/net/html"
 )
 
 const (
@@ -22,12 +22,15 @@ const (
 	StateFileName   = "status.toml"
 	PictureFileName = "background"
 	NasaRSS         = "http://apod.nasa.gov/apod.rss"
+	EditorsRSS     = "https://500px.com/editors.rss"
+	PopularRSS     = "https://500px.com/popular.rss"
 )
 
 type State struct {
 	LastModification time.Time
 	SourceURL        string
 	PictureFilePath  string
+	Count			 int
 }
 
 type StateFile struct {
@@ -109,7 +112,8 @@ func main() {
 		Items []Item `xml:"channel>item"`
 	}
 
-	rss_resp, err := http.Get(NasaRSS)
+	var rss_str = EditorsRSS
+	rss_resp, err := http.Get(rss_str)
 
 	if err != nil {
 		panic(err)
@@ -124,46 +128,47 @@ func main() {
 	rss := Channel{}
 	xml.Unmarshal(body, &rss)
 
-	item_resp, err := http.Get(rss.Items[0].Link)
+	if err != nil {
+		panic(err)
+	}
+
+	state.Count += 1
+	var next_item = state.Count % len(rss.Items)
+	url, err := url.Parse(rss.Items[next_item].Link)
 
 	if err != nil {
 		panic(err)
 	}
 
-	url, err := url.Parse(rss.Items[0].Link)
+	for url.String() == state.SourceURL{
+		state.Count += 1
+		var next_item = state.Count % len(rss.Items)
+		url, err := url.Parse(rss.Items[next_item].Link)
 
-	if err != nil {
-		panic(err)
-	}
-
-	doc, err := html.Parse(item_resp.Body)
-
-	if err != nil {
-		panic(err)
-	}
-
-	var f func(*html.Node) *string
-	f = func(n *html.Node) *string {
-		if n.Type == html.ElementNode && n.Data == "img" {
-			return &n.Parent.Attr[0].Val
+		if err != nil {
+			panic(err)
 		}
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			r := f(c)
-			if r != nil {
-				return r
-			}
-		}
-		return nil
+		_ = url
 	}
 
-	url.Path = path.Join(path.Dir(url.Path), *f(doc))
+	doc, err := goquery.NewDocument(url.String())
+
+	if err != nil {
+		panic(err)
+	}
+
+	var img_url, ok = doc.Find("img.the_photo").First().Attr("src")
+
+	if !ok {
+		panic("Didn't get the file!")
+	}
 
 	if url.String() == state.SourceURL {
 		fmt.Println("Same file, not changeing")
 		return
 	}
 
-	picture_resp, err := http.Get(url.String())
+	picture_resp, err := http.Get(img_url)
 
 	u4, err := uuid.NewV4()
 
