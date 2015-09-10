@@ -3,4 +3,7 @@ Description=NASA daily wallpaper
 
 [Service]
 Type=oneshot
-ExecStart=/a/path/to/wallpaper-switch
+ExecStart=/usr/bin/wallpaper-switch
+After=network-online.target
+After=gdm.service
+After=dbus.service
