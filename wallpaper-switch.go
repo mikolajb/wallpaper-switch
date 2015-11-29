@@ -12,7 +12,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/naoina/toml"
+	"github.com/BurntSushi/toml"
 	uuid "github.com/nu7hatch/gouuid"
 	"golang.org/x/net/html"
 )
@@ -36,15 +36,17 @@ type StateFile struct {
 }
 
 func (c *StateFile) loadState() *State {
-	buf, err := ioutil.ReadFile(c.FilePath)
+	file, err := os.Open(c.FilePath)
 
 	c.State = new(State)
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
 
-	if err := toml.Unmarshal(buf, c.State); err != nil {
-		fmt.Println("Problem with reading configuration file")
+	if !os.IsNotExist(err) {
+		if _, err := toml.DecodeReader(file, c.State); err != nil {
+			fmt.Println("Problem with reading configuration file")
+		}
 	}
 
 	return c.State
@@ -53,13 +55,17 @@ func (c *StateFile) loadState() *State {
 func (c *StateFile) storeState(state *State) {
 	c.State = state
 
-	data, err := toml.Marshal(*state)
-
+	file, err := os.Open(c.FilePath)
+	if err != nil && os.IsNotExist(err) {
+		file, err = os.Create(c.FilePath)
+	}
 	if err != nil {
 		panic(err)
 	}
 
-	if err = ioutil.WriteFile(c.FilePath, data, 0600); err != nil {
+	err = toml.NewEncoder(file).Encode(*state)
+
+	if err != nil {
 		panic(err)
 	}
 }
