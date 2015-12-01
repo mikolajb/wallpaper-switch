@@ -55,10 +55,7 @@ func (c *StateFile) loadState() *State {
 func (c *StateFile) storeState(state *State) {
 	c.State = state
 
-	file, err := os.Open(c.FilePath)
-	if err != nil && os.IsNotExist(err) {
-		file, err = os.Create(c.FilePath)
-	}
+	file, err := os.OpenFile(c.FilePath, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		panic(err)
 	}
