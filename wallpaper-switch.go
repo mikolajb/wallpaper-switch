@@ -60,9 +60,11 @@ func (c *StateFile) storeState(state *State) {
 		panic(err)
 	}
 
-	err = toml.NewEncoder(file).Encode(*state)
+	if err = file.Truncate(0); err != nil {
+		panic(err)
+	}
 
-	if err != nil {
+	if err = toml.NewEncoder(file).Encode(*state); err != nil {
 		panic(err)
 	}
 }
