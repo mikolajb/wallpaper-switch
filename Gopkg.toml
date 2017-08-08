@@ -1,0 +1,8 @@
+[[constraint]]
+  name = "github.com/BurntSushi/toml"
+
+[[constraint]]
+  name = "github.com/nu7hatch/gouuid"
+
+[[constraint]]
+  name = "golang.org/x/net"

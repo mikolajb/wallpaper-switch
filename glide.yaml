@@ -1,7 +1,0 @@
-package: github.com/mikolajb/wallpaper-switch
-import:
-- package: github.com/BurntSushi/toml
-- package: github.com/nu7hatch/gouuid
-- package: golang.org/x/net
-  subpackages:
-  - html
